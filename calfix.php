@@ -37,7 +37,7 @@ if ($ics) {
         print $ics;
     }
 } else {
-    if (strpos($owalink, "reachcalendar.ics")) {
+    if (preg_match('/https:.*reachcalendar\.ics$/', $owalink)) { // hopefully avoid local file exposure
         # Store the url and hash in the database, return a link with the hash
         $source = preg_replace('/.*webcal:\/\/(.*)&.*/', 'https://$1', $owalink);
         $hash = hash('sha256', $source);
