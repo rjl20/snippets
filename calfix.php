@@ -37,9 +37,9 @@ if ($ics) {
         print $ics;
     }
 } else {
-    if (preg_match('/https:.*reachcalendar\.ics$/', $owalink)) { // hopefully avoid local file exposure
+    $source = preg_replace('/.*webcal:\/\/(.*)&.*/', 'https://$1', $owalink);
+    if (preg_match('/^https:.*reachcalendar\.ics$/', $source)) { // hopefully avoid local file exposure
         # Store the url and hash in the database, return a link with the hash
-        $source = preg_replace('/.*webcal:\/\/(.*)&.*/', 'https://$1', $owalink);
         $hash = hash('sha256', $source);
         $sql = $db->prepare('INSERT INTO calfix (hash, url) VALUES(:hash, :url);');
         $sql->bindValue(':hash', $hash);
@@ -70,7 +70,7 @@ if ($ics) {
         </script>
         </body></html>
 <?php
-    } else { // No URL, show form for entering one
+    } else { // No (or invalid) URL, show form for entering one
 ?>
         <html><head></head><body>
         <h1>O365 to Google Calendar</h1>
